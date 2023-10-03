@@ -12,7 +12,8 @@
 ## Descripción
 Contador de 0 a 99 que utiliza dos displays de 7 segmentos para mostrar los dígitos en los displays. 
 El contador comienza en 0 y es capaz de aumentar o disminuir su valor en una unidad con los pulsadores del medio y derecha respectivamente.
-El primer pulsador maneja el encendido y apagado del sistema.
+El primer pulsador maneja el encendido y apagado del sistema. 
+Todas las resistencias son de 220 Ohm, ambos 7 segmentos son ánodo común, todos los pulsadores estan configurados como pullup interno antirrebote. 
 
 ## Funciones principales
 Estas funciones se encargan de encender y apagar con el numero ingresado cada uno de los dos 7 segmentos con su digito respectivamente.
