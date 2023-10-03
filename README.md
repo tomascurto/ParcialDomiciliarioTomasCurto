@@ -94,7 +94,7 @@ void decena(int numero){
 ~~~
 
 ## :robot: Link al proyecto
-- [proyecto]([https://www.tinkercad.com/things/aOYiibnDjWu](https://www.tinkercad.com/things/1eSR2HMqnlC-1-parcial-domiciliario-parte-1-curto-eivers-tomas-leon/editel?sharecode=bqA1U-p1rdNLuh-v8rGiyNX_y7jZung-v_2p1N8etR4))
+- [proyecto](https://www.tinkercad.com/things/1eSR2HMqnlC-1-parcial-domiciliario-parte-1-curto-eivers-tomas-leon/editel?sharecode=bqA1U-p1rdNLuh-v8rGiyNX_y7jZung-v_2p1N8etR4)
 
 ---
 ### Fuentes
