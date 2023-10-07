@@ -2,13 +2,20 @@
 // Curto Eivers, Tomás León.
 
 // contador de 0 a 99 utilizando dos displays de 7 segmentos
-// (ánodo común) y tres botones para controlar la cuenta y 
-// prender y apagar. Se utiliza la técnica de multiplexación 
-// para mostrar los dígitos en los displays. 
+// (ánodo común) y dos botones para controlar la cuenta y 
+// un switch para mostrar solo numeros primos o todos los enteros.
+// Se utiliza la técnica de multiplexación para mostrar los 
+// dígitos en los displays. 
 // El contador debe comienza en 0 y es capaz de aumentar o 
-// disminuir su valor en una unidad con los botones.
-// Todas las resistencias son de 220 Ohm y los pulsadores son
-// de tipo pullup interno y los displays son de ánodo común.
+// disminuir su valor en una unidad o al siguiente numero primo.
+// Todas las resistencias son de 220 Ohm exepto la del transitor
+// que es de 1kOhm, los pulsadores son de tipo pullup interno y 
+// los displays son ánodo común.
+// Ademas se agrego un motor CC (teoricamente funcionando como
+// ventilador) el cual es regulado por el sensor de temperatura.
+// Cuando la temperatura es mayor al número mostrado en el display
+// se activa el motor, y a mayor temperatura mayor velocidad de
+// giro.
 
 // Definicion de nombres a los pines de arduino correspondientes a
 // su conexión.
