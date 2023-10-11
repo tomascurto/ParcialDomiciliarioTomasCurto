@@ -6,7 +6,7 @@
 
 
 ## Proyecto: VENTILADOR CON FOTORESISTOR Y SENSOR DE TEMPERATURA.
-![Tinkercad](./img/ArduinoTinkercad3.jpg)
+![Tinkercad](./img/ArduinoTinkercad.jpg)
 
 
 ## Descripción
