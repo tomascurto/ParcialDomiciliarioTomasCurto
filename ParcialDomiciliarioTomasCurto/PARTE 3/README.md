@@ -5,8 +5,8 @@
 - Tomás León Curto Eivers
 
 
-## Proyecto: Contador de dos digitos en Arduino.
-![Tinkercad](./img/ArduinoTinkercad.jpg)
+## Proyecto: VENTILADOR CON FOTORESISTOR Y SENSOR DE TEMPERATURA.
+![Tinkercad](./img/ArduinoTinkercad3.jpg)
 
 
 ## Descripción
