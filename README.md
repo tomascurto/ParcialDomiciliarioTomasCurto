@@ -6,7 +6,7 @@
 
 
 ## Proyecto: Contador de dos digitos en Arduino.
-![Tinkercad](./img/ArduinoTinkercad.jpg)
+![Tinkercad](./img/ArduinoTinkercad3.jpg)
 
 
 ## Descripción
