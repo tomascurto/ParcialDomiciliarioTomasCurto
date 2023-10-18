@@ -1,0 +1,381 @@
+// C++ code
+// Curto Eivers, Tomás León.
+
+// contador de 0 a 99 utilizando dos displays de 7 segmentos
+// (ánodo común) y dos botones para controlar la cuenta y 
+// un switch para mostrar solo numeros pares o todos los enteros.
+// Se utiliza la técnica de multiplexación para mostrar los 
+// dígitos en los displays. 
+// El contador debe comienza en 0 y es capaz de aumentar o 
+// disminuir su valor en una unidad o al siguiente numero par.
+// Todas las resistencias son de 220 Ohm exepto la del transitor
+// que es de 1kOhm y la del fototransitor que es de 10kOhms, 
+// los pulsadores son de tipo pullup interno y los displays 
+// son ánodo común.
+// Ademas se agrego un motor CC (teoricamente funcionando como
+// ventilador) el cual es regulado por el sensor de temperatura.
+// Cuando la temperatura es mayor al número ingresado en modo normal
+// se activa el motor, y a mayor temperatura mayor velocidad de
+// giro.
+// Por ultimo se agrego un fotoresistor el cual esta mapeado en
+// una escala 1-100 y si su lectura es menor a la ingresada con 
+// como botones en modo numero par el motor se apaga, con la
+// intencion de apagar el motor automaticamente de noche.
+
+// Definicion de nombres a los pines de arduino correspondientes a
+// su conexión.
+#define TOPR 13
+#define TOP 12
+#define TOPL 11
+#define MID 10
+#define BOTL 9
+#define BOT 8
+#define BOTR 7
+#define DECENA A5
+#define UNIDAD A4
+#define SWITCH 6
+#define SUMA 5
+#define RESTA 4
+#define SENSOR A3
+#define MOTOR 3
+#define ILUMINACION A2
+
+// Setup de pines y monitor serial.
+void setup()
+{
+  pinMode(TOPR, OUTPUT);
+  pinMode(TOP, OUTPUT);
+  pinMode(TOPL, OUTPUT);
+  pinMode(MID, OUTPUT);
+  pinMode(BOT, OUTPUT);
+  pinMode(BOTR, OUTPUT);
+  pinMode(BOTL, OUTPUT);
+  pinMode(UNIDAD, OUTPUT);
+  pinMode(DECENA, OUTPUT);
+  pinMode(SWITCH, INPUT_PULLUP);
+  pinMode(SUMA, INPUT_PULLUP);
+  pinMode(RESTA, INPUT_PULLUP);
+  Serial.begin(9600);
+}
+
+// Defino la variable numero que se mostrara en los segmentos.
+int numero = 0;
+int numero_par = 0;
+
+// Defino la variable que analiza la posición del Switch.
+int estado_switch = 0;
+
+// Defino las variables que voy a usar para el pulsador 
+// antirrebote de suma.
+int pulsado_suma = 0;
+int estado_suma = 0;
+
+// Defino las variables que voy a usar para el pulsador 
+// antirrebote de resta.
+int pulsado_resta = 0;
+int estado_resta = 0;
+
+// Defino variables para el sensor de temperatura, velocidad del 
+// motor y valor de la fotoresistencia, fotoresistencia y brillo 
+// de leds.
+int temperatura;
+int lectura;
+int velocidad;
+int brillo;
+int valorLDR;
+
+// Función que apaga todos los leds.
+void apagar()
+{
+  digitalWrite(TOP, HIGH);
+  digitalWrite(TOPR, HIGH);
+  digitalWrite(TOPL, HIGH);
+  digitalWrite(MID, HIGH);
+  digitalWrite(BOT, HIGH);
+  digitalWrite(BOTL, HIGH);
+  digitalWrite(BOTR, HIGH);
+}
+
+//Funciones que muestran numeros del 0-9 en 7 segmentos.
+void prenderCero()
+{
+	digitalWrite(TOP, LOW);
+	digitalWrite(TOPR, LOW);
+	digitalWrite(TOPL, LOW);
+	digitalWrite(BOTR, LOW);
+	digitalWrite(BOTL, LOW);
+	digitalWrite(BOT, LOW);
+}
+void prenderUno()
+{
+	digitalWrite(TOPR, LOW);
+	digitalWrite(BOTR, LOW);
+}
+void prenderDos()
+{
+	digitalWrite(TOP, LOW);
+	digitalWrite(TOPR, LOW);
+	digitalWrite(MID, LOW);
+	digitalWrite(BOTL, LOW);
+	digitalWrite(BOT, LOW);
+}
+void prenderTres()
+{
+	digitalWrite(TOP, LOW);
+	digitalWrite(TOPR, LOW);
+	digitalWrite(MID, LOW);
+	digitalWrite(BOTR, LOW);
+	digitalWrite(BOT, LOW);
+  	apagar();
+}
+void prenderCuatro()
+{
+    digitalWrite(TOPR, LOW);
+	digitalWrite(TOPL, LOW);
+	digitalWrite(MID, LOW);
+	digitalWrite(BOTR, LOW);
+}
+void prenderCinco()
+{
+    digitalWrite(TOP, LOW);
+	digitalWrite(TOPL, LOW);
+	digitalWrite(MID, LOW);
+	digitalWrite(BOTR, LOW);
+	digitalWrite(BOT, LOW);
+  	apagar();
+}
+void prenderSeis()
+{
+    digitalWrite(TOP, LOW);
+	digitalWrite(TOPL, LOW);
+	digitalWrite(MID, LOW);
+	digitalWrite(BOTR, LOW);
+	digitalWrite(BOTL, LOW);
+	digitalWrite(BOT, LOW);
+}
+void prenderSiete()
+{
+	digitalWrite(TOP, LOW);
+	digitalWrite(TOPR, LOW);
+	digitalWrite(BOTR, LOW);
+}
+void prenderOcho()
+{		
+    digitalWrite(TOP, LOW);
+	digitalWrite(TOPR, LOW);
+	digitalWrite(TOPL, LOW);
+    digitalWrite(MID, LOW);
+	digitalWrite(BOTR, LOW);
+	digitalWrite(BOTL, LOW);
+	digitalWrite(BOT, LOW);
+}
+void prenderNueve()
+{
+    digitalWrite(TOP, LOW);
+	digitalWrite(TOPR, LOW);
+	digitalWrite(TOPL, LOW);
+    digitalWrite(MID, LOW);
+	digitalWrite(BOTR, LOW);
+	digitalWrite(BOT, LOW);
+}
+
+//Función que recibe un numero y lo muestra
+void mostrarNumero(int numero)
+{
+  if (numero==0)
+  {
+  	prenderCero();
+  }
+  if (numero==1)
+  {
+  	prenderUno();
+  }
+  if (numero==2)
+  {
+  	prenderDos();
+  }
+  if (numero==3)
+  {
+  	prenderTres();
+  }
+  if (numero==4)
+  {
+  	prenderCuatro();
+  }
+  if (numero==5)
+  {
+  	prenderCinco();
+  }
+  if (numero==6)
+  {
+  	prenderSeis();
+  }
+  if (numero==7)
+  {
+  	prenderSiete();
+  }
+  if (numero==8)
+  {
+  	prenderOcho();
+  }
+  if (numero==9)
+  {
+  	prenderNueve();
+  }
+}
+
+// Funcion unidad() muestra la unidad correspondiente en el
+// 7 segmentos de la derecha, utilizando el pin
+// A4 para la multiplexación.
+void unidad(int numero)
+{
+  digitalWrite(UNIDAD, HIGH); // Enciende el display de la derecha.
+  // Calcula la unidad del numero de dos cifras:
+  // ej: 98 % 10 = 8;
+  // luego prende los leds correspondientes.
+  int numero_a_mostrar = numero % 10;
+  mostrarNumero(numero_a_mostrar);
+  apagar(); // apaga todos los leds.
+  digitalWrite(UNIDAD, LOW); // apaga el display de la derecha.
+}
+
+// Función decena() mostrara el digito de las decenas
+// en el 7 segmentos de la izquierda, utilizando el pin
+// A5 para la multiplexación.
+void decena(int numero)
+{
+  digitalWrite(DECENA, HIGH);// Enciende el display de la izquierda.
+  // Calcula la decena en un numero de dos cifras:
+  // ej: 98 / 10 = 9,8 el cual es menor a 10 pero mayor o igual a 9;
+  // luego prende los leds correspondientes.
+  int numero_a_mostrar = numero/10;
+  mostrarNumero(numero_a_mostrar);
+  apagar(); //apaga todos los leds.
+  digitalWrite(DECENA, LOW); // apaga el display de la izquierda.
+}
+
+void suma_normal()
+{
+  numero ++; //incrementa el número.
+  if (numero>99) //contempla que no se pase del límite 99.
+  {
+    numero = 99;
+  }
+ Serial.println(numero);// imprime número en "Serial Monitor".
+}
+
+void resta_normal()
+{
+  numero --; // disminuye el número.
+  if (numero<0) //contempla que no se pase del límite 0.
+  {
+    numero = 0;
+  }
+  Serial.println(numero);// imprime número en "Serial Monitor".
+}
+
+void suma_par()
+{
+  numero_par +=2 ; //incrementa el número.
+  if (numero>100) //contempla que no se pase del límite 100.
+  {
+  	numero_par = 100;
+  }
+}
+
+void resta_par()
+{
+  numero_par -=2; // disminuye el número.
+  if (numero<0) //contempla que no se pase del límite 0.
+  {
+  	numero_par = 0;
+  }
+}
+
+//LOOP
+void loop()
+{  
+  //VERIFICO SI EL MODO ES NORMAL O PARES:
+  estado_switch = digitalRead(SWITCH);// detecta el estado del switch.
+  
+  //PRESION DE PULSADOR ANTI-REBOTE PULLUP INTERNO "SUMA":
+  pulsado_suma = digitalRead(SUMA);// detecta si se presiona el pulsador.
+  if (pulsado_suma == LOW)// pregunta si se esta presionando el pulsador.
+  {
+  	estado_suma = 1;// cambia de valor la variable estado.
+  }
+  if (estado_suma == 1 && pulsado_suma == HIGH)// pregunta si el estado es 1 pero se solto el boton.
+  {
+    if (estado_switch == LOW)//Detecta si el switch esta en modo normal.
+    {  
+  		suma_normal();
+    }
+    else //Detecta si el switch esta en modo pares.
+    {
+    	suma_par();
+    }
+    estado_suma = 0;// devulve al estado original.
+  }
+  
+  //PRESION DE PULSADOR ANTI-REBOTE PULLUP INTERNO "RESTA":
+  pulsado_resta = digitalRead(RESTA);// detecta si se presiona el pulsador.
+  if (pulsado_resta == LOW)// pregunta si se esta presionando el pulsador.
+  {
+  	estado_resta = 1;// cambia de valor la variable estado.
+  }
+  if (estado_resta == 1 && pulsado_resta == HIGH)// pregunta si el estado es 1 pero se solto el boton.
+  {
+  	if (estado_switch == LOW)//Detecta si el switch esta en modo normal.
+    {  
+  		resta_normal();
+    }
+    else //Detecta si el switch esta en modo pares.
+    {
+    	resta_par();
+    }
+    estado_resta = 0;// devulve al estado original.
+  }
+  
+  if (estado_switch == LOW)//Detecta si el switch esta en modo normal.
+  {
+  	decena(numero); // muestra el digito de la decena.
+  	unidad(numero); // muestra el digito de la unidad.
+  }
+  else //Detecta si el switch esta en modo pares.
+  {
+  	decena(numero_par); // muestra el digito de la decena.
+  	unidad(numero_par); // muestra el digito de la unidad.
+  }
+    // se utiliza el metodo de Multiplexación por el cual
+    // se encieden y apagan de forma alternada los displays
+    // por medio de los pines A4 y A5, a una velocidad tal que
+    // el ojo humano percibe los dos prendidos al mismo tiempo.
+  apagar(); // apaga los displays
+  delay(15);// retraso de 15ms. agiliza el cambio en los leds 
+  
+  // FUNCIONAMIENTO SENSOR Y MOTOR QUE AUMENTA VELOCIDAD CON 
+  // TEMPERATURA:
+  lectura = analogRead(SENSOR);
+  temperatura = map(lectura,20,358,-40,125);
+  velocidad = map(temperatura,0,125,0,255);
+  
+  // DEFINO INTENSIDAD DE ILUMINACION A PARTIR DE LA CUAL SE
+  // APAGARA EL MOTOR PARA QUE EL VENTILADOR NO HAGA RUIDO DE 
+  // NOCHE SE REGULA DEL 0 AL 100 CON LOS NUMROS PARES.
+  valorLDR = analogRead(ILUMINACION);
+  brillo = map(valorLDR, 1023, 0, 105, -5);
+  Serial.println(brillo);
+  
+  // EL SISTEMA SOLO SE ACTIVARA SI LA TEMPERATURA ES MAYOR AL 
+  // NUMERO NORMAL (NO NECESARIAMENTE PAR) Y LA ILUMINACIÓN
+  // MAYOR A LA DEL DISPLAY DE NUMEROS PARES EN LA ESCALA QUE
+  // SE DEFINIO.
+  if (temperatura > numero && brillo >= numero_par)
+  {
+   	analogWrite(MOTOR,velocidad); 
+  }
+  else
+  {
+  	analogWrite(MOTOR,LOW); 
+  }
+}  
